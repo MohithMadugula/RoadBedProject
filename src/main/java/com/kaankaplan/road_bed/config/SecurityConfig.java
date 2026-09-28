@@ -9,6 +9,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.authentication.configuration.EnableGlobalAuthentication;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -21,6 +22,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableGlobalAuthentication
+@EnableMethodSecurity
 public class SecurityConfig {
 
     private final UserDetailsService userDetailsService;
@@ -47,15 +49,16 @@ public class SecurityConfig {
         http.cors().and().csrf().disable()
                 .authorizeHttpRequests()
                 .requestMatchers(HttpMethod.POST, "/auth/**").permitAll()
-                .requestMatchers(HttpMethod.GET,  "/cities/**").permitAll()
-                .requestMatchers(HttpMethod.GET,  "/categories/**").permitAll()
-                .requestMatchers(HttpMethod.POST,  "/categories/**").permitAll()
-                .requestMatchers(HttpMethod.GET,  "/houses/**").permitAll()
-                .requestMatchers(HttpMethod.GET,  "/tenants/**").permitAll()
-                .requestMatchers(HttpMethod.GET,  "/users/**").permitAll()
-                .requestMatchers(HttpMethod.POST,  "/cities/**").permitAll()
-                .requestMatchers(HttpMethod.POST,  "/roles/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/cities/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/categories/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/categories/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/houses/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/tenants/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/users/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/cities/**").hasAuthority("AUTHORITY_ADMIN")
+                .requestMatchers(HttpMethod.POST, "/roles/**").hasAuthority("AUTHORITY_ADMIN")
                 .anyRequest().authenticated();
+
 
         http.authenticationProvider(authenticationProvider());
 

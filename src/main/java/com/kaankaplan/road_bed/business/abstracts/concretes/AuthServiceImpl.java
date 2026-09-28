@@ -42,6 +42,9 @@ public class AuthServiceImpl implements AuthService {
     @Transactional
     @Override
     public LoginResponse login(LoginRequest loginRequest) {
+
+
+
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.email(), loginRequest.password())
         );

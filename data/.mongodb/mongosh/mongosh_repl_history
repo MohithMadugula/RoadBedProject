@@ -1,0 +1,28 @@
+exit
+})    email: "testuser2@example.com"db.tenants.countDocuments({
+})    _id: ObjectId("6abaa599e806e964ed4e82f5")db.tenants.deleteOne({
+db.users.countDocuments({ email: "testuser2@example.com" })
+})    _id: ObjectId("6abaa599e806e964ed4e82f4")db.users.deleteOne({
+).pretty()  { _id: 1, email: 1, fullName: 1, role: 1, password: 1 }  { email: "testuser2@example.com" },db.users.find(
+).pretty()  { _id: 1, email: 1, fullName: 1, role: 1, password: 1 }  { email: "testuser2@example.com" },db.tenants.find(
+).pretty()  { _id: 1, email: 1, fullName: 1, role: 1, password: 1 }  { email: "testuser2@example.com" },db.users.find(use road_bed_db
+exit
+).pretty()  { _id: 1, email: 1, fullName: 1, role: 1 }  { email: "testuser2@example.com" },db.users.find(
+).pretty()  { _id: 1, email: 1, fullName: 1, role: 1 }  { email: "testuser2@example.com" },db.tenants.find(
+db.tenants.countDocuments({ email: "testuser2@example.com" })
+db.tenants.findOne({ email: "testuser2@example.com" })
+use road_bed_db
+exit
+db.roles.find().pretty()
+db.tenants.find({email: "testuser@example.com"}).pretty()
+exit
+clear
+db.tenants.find({email: "testuser@example.com"}).pretty()
+db.roles.find().pretty()
+db.tenants.find({email: "testuser@example.com"}).pretty()
+exit
+db.roles.find().pretty()
+db.roles.insertOne({ roleName: "TENANT" })
+db.tenants.find({email: "testuser@example.com"}).pretty()
+db.roles.find().pretty()
+use road_bed_db

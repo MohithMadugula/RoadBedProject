@@ -1,5 +1,6 @@
 package com.kaankaplan.road_bed.config.redis;
 
+import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
@@ -13,15 +14,36 @@ public class RedisConfig {
 
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
-        RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
-        redisStandaloneConfiguration.setPort(6379);
-        redisStandaloneConfiguration.setHostName("localhost");
+
+        Dotenv dotenv = Dotenv.load();
+
+        RedisStandaloneConfiguration redisStandaloneConfiguration =
+                new RedisStandaloneConfiguration();
+
+        redisStandaloneConfiguration.setHostName(
+                dotenv.get("REDIS_HOST")
+        );
+
+        redisStandaloneConfiguration.setPort(
+                Integer.parseInt(dotenv.get("REDIS_PORT"))
+        );
+
+        redisStandaloneConfiguration.setUsername(
+                dotenv.get("REDIS_USERNAME")
+        );
+
+        redisStandaloneConfiguration.setPassword(
+                dotenv.get("REDIS_PASSWORD")
+        );
+
         return new JedisConnectionFactory(redisStandaloneConfiguration);
     }
 
     @Bean
     public RedisTemplate<String, Object> redisTemplate() {
+
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+
         redisTemplate.setConnectionFactory(jedisConnectionFactory());
 
         redisTemplate.setKeySerializer(new StringRedisSerializer());

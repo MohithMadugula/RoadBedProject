@@ -1,5 +1,6 @@
 package com.kaankaplan.road_bed.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -19,6 +20,8 @@ public class User implements Serializable {
 
     public String fullName;
 
+
+    @JsonIgnore
     public String password;
 
     public List<House> favoriteHouses = new ArrayList<>();

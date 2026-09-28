@@ -42,7 +42,7 @@ public class HouseController {
         return houseService.getHouseByHouseId(houseId);
     }
 
-    @PreAuthorize("hasAnyRole('AUTHORITY_TENANT')")
+    @PreAuthorize("hasAuthority('AUTHORITY_TENANT')")
     @PostMapping(path="save")
     public House saveHouse(@RequestPart("house") House house,
                            @RequestPart("multipartFile") List<MultipartFile> multipartFileList){
@@ -50,7 +50,7 @@ public class HouseController {
         return houseService.save(house, multipartFileList);
     }
 
-    @PreAuthorize("hasAnyRole('TENANT', 'ADMIN')")
+    @PreAuthorize("hasAnyAuthority('AUTHORITY_TENANT', 'AUTHORITY_ADMIN')")
     @PostMapping("delete")
     public House deleteHouse(@RequestBody House house) {
         return houseService.deleteHouse(house);
@@ -64,7 +64,7 @@ public class HouseController {
         return houseService.getHousesByCityAndEmptyDates(cityName, startDate, endDate);
     }
 
-    @PreAuthorize("hasAnyRole('TENANT', 'ADMIN')")
+    @PreAuthorize("hasAuthority('AUTHORITY_TENANT')")
     @PostMapping("reserve")
     public void reserveHouse(@RequestBody ReserveHouseRequest reserveHouseRequest){
         houseService.reserveHouse(reserveHouseRequest);
