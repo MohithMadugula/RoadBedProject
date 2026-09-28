@@ -12,19 +12,17 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 public class RoadBedApplication {
 
     public static void main(String[] args) {
-
-        Dotenv dotenv = Dotenv.load();
+        Dotenv dotenv = Dotenv.configure()
+                .ignoreIfMissing()
+                .load();
 
         String mongoUri = dotenv.get("MONGODB_URI");
 
-        if (mongoUri == null || mongoUri.isBlank()) {
-            throw new IllegalStateException("MONGODB_URI was not loaded from .env");
+        if (mongoUri != null && !mongoUri.isBlank()) {
+            System.setProperty("MONGODB_URI", mongoUri.replace("\uFEFF", "").trim());
         }
-
-        mongoUri = mongoUri.replace("\uFEFF", "").trim();
-
-        System.setProperty("MONGODB_URI", mongoUri);
 
         SpringApplication.run(RoadBedApplication.class, args);
     }
+
 }

@@ -10,8 +10,14 @@ public class CloudinaryConfig {
 
     @Bean
     public Cloudinary cloudinary() {
-        Dotenv dotenv = Dotenv.load();
-        Cloudinary cloudinary = new Cloudinary(dotenv.get("CLOUDINARY_URL"));
+        Dotenv dotenv = Dotenv.configure()
+                .ignoreIfMissing()
+                .load();
+
+        String cloudinaryUrl =
+                dotenv.get("CLOUDINARY_URL", System.getenv("CLOUDINARY_URL"));
+
+        Cloudinary cloudinary = new Cloudinary(cloudinaryUrl);
         cloudinary.config.secure = true;
 
         return cloudinary;

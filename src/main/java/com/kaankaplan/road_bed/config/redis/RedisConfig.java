@@ -14,27 +14,22 @@ public class RedisConfig {
 
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
+        Dotenv dotenv = Dotenv.configure()
+                .ignoreIfMissing()
+                .load();
 
-        Dotenv dotenv = Dotenv.load();
+        String host = dotenv.get("REDIS_HOST", System.getenv("REDIS_HOST"));
+        String port = dotenv.get("REDIS_PORT", System.getenv("REDIS_PORT"));
+        String username = dotenv.get("REDIS_USERNAME", System.getenv("REDIS_USERNAME"));
+        String password = dotenv.get("REDIS_PASSWORD", System.getenv("REDIS_PASSWORD"));
 
         RedisStandaloneConfiguration redisStandaloneConfiguration =
                 new RedisStandaloneConfiguration();
 
-        redisStandaloneConfiguration.setHostName(
-                dotenv.get("REDIS_HOST")
-        );
-
-        redisStandaloneConfiguration.setPort(
-                Integer.parseInt(dotenv.get("REDIS_PORT"))
-        );
-
-        redisStandaloneConfiguration.setUsername(
-                dotenv.get("REDIS_USERNAME")
-        );
-
-        redisStandaloneConfiguration.setPassword(
-                dotenv.get("REDIS_PASSWORD")
-        );
+        redisStandaloneConfiguration.setHostName(host);
+        redisStandaloneConfiguration.setPort(Integer.parseInt(port));
+        redisStandaloneConfiguration.setUsername(username);
+        redisStandaloneConfiguration.setPassword(password);
 
         return new JedisConnectionFactory(redisStandaloneConfiguration);
     }
