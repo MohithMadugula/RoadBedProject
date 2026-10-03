@@ -42,10 +42,9 @@ public class HouseController {
         return houseService.getHouseByHouseId(houseId);
     }
 
-    @PreAuthorize("hasAuthority('AUTHORITY_TENANT')")
-    @PostMapping(path="save")
+    @PostMapping(path = "save")
     public House saveHouse(@RequestPart("house") House house,
-                           @RequestPart("multipartFile") List<MultipartFile> multipartFileList){
+            @RequestPart("multipartFile") List<MultipartFile> multipartFileList) {
 
         return houseService.save(house, multipartFileList);
     }
@@ -58,15 +57,15 @@ public class HouseController {
 
     @GetMapping("getByCityNameAndEmptyDate/{cityName}")
     public List<House> getHousesByCityAndEmptyDates(@PathVariable String cityName,
-                                                    @RequestParam("start") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date startDate,
-                                                    @RequestParam("end") @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate) {
+            @RequestParam("start") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date startDate,
+            @RequestParam("end") @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate) {
 
         return houseService.getHousesByCityAndEmptyDates(cityName, startDate, endDate);
     }
 
     @PreAuthorize("hasAuthority('AUTHORITY_TENANT')")
     @PostMapping("reserve")
-    public void reserveHouse(@RequestBody ReserveHouseRequest reserveHouseRequest){
+    public void reserveHouse(@RequestBody ReserveHouseRequest reserveHouseRequest) {
         houseService.reserveHouse(reserveHouseRequest);
     }
 }

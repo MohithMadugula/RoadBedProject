@@ -19,7 +19,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-
 @Configuration
 @EnableGlobalAuthentication
 @EnableMethodSecurity
@@ -57,8 +56,8 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/users/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/cities/**").hasAuthority("AUTHORITY_ADMIN")
                 .requestMatchers(HttpMethod.POST, "/roles/**").hasAuthority("AUTHORITY_ADMIN")
+                .requestMatchers(HttpMethod.POST, "/houses/save").hasAuthority("AUTHORITY_TENANT")
                 .anyRequest().authenticated();
-
 
         http.authenticationProvider(authenticationProvider());
 
@@ -68,7 +67,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
+            throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
@@ -78,7 +78,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public WebMvcConfigurer corsConfigurer(){
+    public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry corsRegistry) {
