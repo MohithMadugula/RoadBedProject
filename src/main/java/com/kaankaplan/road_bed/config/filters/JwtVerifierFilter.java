@@ -53,6 +53,8 @@ public class JwtVerifierFilter extends OncePerRequestFilter {
                 Authentication authentication = new UsernamePasswordAuthenticationToken(issuer, null,
                         grantedAuthorities);
 
+                System.out.println("AUTHENTICATION AUTHORITIES = " + authentication.getAuthorities());
+
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } catch (JwtException e) {
                 throw new IllegalStateException(e);
