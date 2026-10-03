@@ -4,7 +4,9 @@ import SmallCard from "./SmallCard";
 
 
 const getCities = async () => {
-  const result = await fetch("http://localhost:8080/cities/getall").then(res => res.json())
+  const result = await fetch(
+  `${process.env.NEXT_PUBLIC_API_URL}/cities/getall`
+  ).then(res => res.json())
   return result;
 }
 

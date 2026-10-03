@@ -37,7 +37,9 @@ function Login() {
 
         <div className="flex flex-col items-center mt-16 w-[400px] sm:w-full mx-auto">
           <div>
-            <Image className="mx-auto mb-1 object-contain" src="https://res.cloudinary.com/dspea8wm4/image/upload/v1676559288/road_icon_kh1xt5.png" width={40} height={40} />
+            <div className="h-10 w-10 rounded-full bg-teal-400 flex items-center justify-center text-white font-bold">
+              RB
+            </div>
             <h2 className="text-5xl font-semibold text-teal-600">Road Bed</h2>
           </div>
 
@@ -75,7 +77,7 @@ function Login() {
                 Login
               </button>
             </div>
-            <p className="pt-6 pb-1 text-center text-gray-500">You don't have an account? </p>
+            <p className="pt-6 pb-1 text-center text-gray-500">You don&apos;t have an account? </p>
             <p className="mb-2 text-center">
               <Link href="/register">
                 <span className="font-semibold underline decoration-2 decoration-teal-600 cursor-pointer">

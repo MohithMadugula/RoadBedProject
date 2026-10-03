@@ -12,15 +12,15 @@ function HouseCard({ house }) {
       >
         <Image
           className="w-72 h-52 rounded-t-2xl mx-auto"
-          src={house.imageUrlList[0].imageUrl}
+          src={house.imageUrlList?.[0]?.imageUrl || "/house_placeholder.png"}
           width={1200}
           height={100}
         />
 
         <div className="p-4">
           <p className="text-sm text-gray-500">
-            {house.capacity} Guests · {house.category.categoryName} ·{" "}
-            {house.city.cityName}
+            {house.capacity} Guests · {house.category?.categoryName || "House"} ·{" "}
+            {house.city?.cityName || "Location unavailable"}
           </p>
 
           <p className="text-lg font-semibold text-start mt-3 mr-2">

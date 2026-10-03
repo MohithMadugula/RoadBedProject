@@ -30,7 +30,7 @@ export async function getServerSideProps(context) {
     const { city } = context.params;
    
     const houses = await fetch(
-      "http://localhost:8080/houses/getByCityName/" + city
+    `${process.env.NEXT_PUBLIC_API_URL}/houses/getByCityName/${city}`
     ).then((res) => res.json());
   
     return {

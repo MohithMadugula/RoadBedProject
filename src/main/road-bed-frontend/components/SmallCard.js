@@ -13,7 +13,7 @@ function SmallCard({ img, name }) {
         onClick={() => router.push(`/city/${name}`)}
     >
       <div className="relative h-24 w-24 sm:h-36 sm:w-64">
-        <Image className="rounded-xl" src={img} fill alt="" sizes={100}/>
+        <Image className="rounded-xl" src={img} fill alt="" sizes="(max-width: 640px) 96px, 256px"/>
         <div
           className="absolute h-24 w-24 sm:h-36 sm:w-64 flex items-center justify-center
             rounded-xl group-hover:bg-gradient-to-r from-teal-500 to-slate-500 group-hover:opacity-90 

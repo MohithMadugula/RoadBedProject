@@ -40,7 +40,7 @@ function MyHouseCard({house}) {
         <div className="w-64 h-52 px-3 hidden sm:flex justify-center items-center">
           <Image
             className="w-64 h-40 object-cover rounded-lg"
-            src={house.imageUrlList[0].imageUrl}
+            src={house.imageUrlList?.[0]?.imageUrl || "/house_placeholder.png"}
             width={1200}
             height={900}
           />
@@ -50,7 +50,7 @@ function MyHouseCard({house}) {
           <h3 className="text-lg font-semibold text-gray-700 mb-3">
             {house.description}
           </h3>
-          <p className="text-gray-500 text-sm">{house.category.categoryName} · {house.capacity} guests</p>
+          <p className="text-gray-500 text-sm">{house.category?.categoryName || "House"} · {house.capacity} guests</p>
           <p className="text-gray-600 text-md">{house.address}</p>
         </div>
 

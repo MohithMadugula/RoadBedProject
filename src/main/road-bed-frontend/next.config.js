@@ -10,7 +10,8 @@ const nextConfig = {
       "img.freepik.com",
       "res.cloudinary.com",
       "cdn.londonandpartners.com",
-      "images.pexels.com"
+      "images.pexels.com",
+      "media.istockphoto.com","cdn.britannica.com"
     ]
   }
 }

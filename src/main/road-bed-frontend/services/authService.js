@@ -2,7 +2,7 @@ import axios from "axios"
 
 export default class AuthService {
 
-    apiUrl = "http://localhost:8080/auth/"
+    apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/auth/`
 
     login(loginRequest) {
         return axios.post(this.apiUrl + "login", loginRequest);

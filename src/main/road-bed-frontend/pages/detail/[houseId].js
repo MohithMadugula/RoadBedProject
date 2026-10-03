@@ -271,10 +271,10 @@ function HouseDetail({ house, firstImage, secondImage, thirdImage, tenant }) {
                 />
               </div>
               <div className="border-r-2 border-l-2 border-1 border-teal-500 w-fit px-1 mt-1">
-                <p className="text-gray-500">{house.category.categoryName}</p>
+                <p className="text-gray-500">{house.category?.categoryName || "House"}</p>
               </div>
               <p className="pt-1 text-gray-500">{house.capacity} guests</p>
-              <p className="text-gray-500 pt-1">{house.city.cityName}</p>
+              <p className="text-gray-500 pt-1">{house.city?.cityName || "Location unavailable"}</p>
               <p className="pt-1 text-gray-500">{house.address}</p>
               <p className="pt-2 text-end">
                 {" "}
@@ -325,7 +325,7 @@ function HouseDetail({ house, firstImage, secondImage, thirdImage, tenant }) {
               minDate={new Date()}
               rangeColors={["#14B8A5"]}
               months={2}
-              disabledDates={house.reservedDates.map((d) => new Date(d))}
+              disabledDates={(house.reservedDates || []).map((d) => new Date(d))}
               direction="horizontal"
               onChange={handleSelectDate}
             />
@@ -335,7 +335,7 @@ function HouseDetail({ house, firstImage, secondImage, thirdImage, tenant }) {
               ranges={[selectionRange]}
               minDate={new Date()}
               rangeColors={["#14B8A5"]}
-              disabledDates={house.reservedDates.map((d) => new Date(d))}
+              disabledDates={(house.reservedDates || []).map((d) => new Date(d))}
               direction="horizontal"
               onChange={handleSelectDate}
             />
@@ -356,32 +356,46 @@ function HouseDetail({ house, firstImage, secondImage, thirdImage, tenant }) {
 }
 
 export async function getServerSideProps(context) {
-  let { houseId } = context.params;
+  const { houseId } = context.params;
 
-  const house = await fetch(
-    "http://localhost:8080/houses/getById/" + houseId
-  ).then((res) => res.json());
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/houses/getById/${houseId}`
+  );
 
-  const tenant = await fetch(
-    "http://localhost:8080/tenants/getByEmail/" + house.owner.email
-  ).then((res) => res.json());
+  if (!response.ok) return { notFound: true };
 
-  let firstImage = house.imageUrlList[0].imageUrl;
-  let secondImage = house.imageUrlList[1]
-    ? house.imageUrlList[1].imageUrl
-    : null;
-  let thirdImage = house.imageUrlList[2]
-    ? house.imageUrlList[2].imageUrl
-    : null;
+  const body = await response.text();
+  if (!body.trim()) return { notFound: true };
+
+  let house;
+  try {
+    house = JSON.parse(body);
+  } catch {
+    return { notFound: true };
+  }
+
+  if (!house?.houseId) return { notFound: true };
+
+  let tenant = null;
+  if (house.owner?.email) {
+    const tenantResponse = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/tenants/getByEmail/${encodeURIComponent(house.owner.email)}`
+    );
+    if (tenantResponse.ok) {
+      const tenantBody = await tenantResponse.text();
+      if (tenantBody.trim()) {
+        try { tenant = JSON.parse(tenantBody); } catch { tenant = null; }
+      }
+    }
+  }
+
+  const imageList = Array.isArray(house.imageUrlList) ? house.imageUrlList : [];
+  const firstImage = imageList[0]?.imageUrl || "/house_placeholder.png";
+  const secondImage = imageList[1]?.imageUrl || null;
+  const thirdImage = imageList[2]?.imageUrl || null;
 
   return {
-    props: {
-      house,
-      firstImage,
-      secondImage,
-      thirdImage,
-      tenant,
-    },
+    props: { house, firstImage, secondImage, thirdImage, tenant },
   };
 }
 

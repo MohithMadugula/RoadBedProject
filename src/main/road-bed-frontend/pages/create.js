@@ -29,10 +29,12 @@ function Create({ cities, categories }) {
   const formBtnRef = useRef(null);
 
   useEffect(() => {
+    if (!session?.user?.email) return;
     userService
-      .getByEmail(session?.user?.email)
-      .then((res) => setUserInfo(res.data));
-  }, []);
+      .getByEmail(session.user.email)
+      .then((res) => setUserInfo(res.data))
+      .catch(() => setUserInfo({}));
+  }, [session?.user?.email]);
 
   const {
     register,
@@ -64,24 +66,24 @@ function Create({ cities, categories }) {
     );
     toast.promise(
       houseService.save(formData).then((res) => {
-        if(res.status === 200)
+        if (res.status === 200)
           router.push("/detail/" + res.data.houseId);
       }),
       {
         loading: 'Your house is saving...',
         success: <b>House saved!</b>,
         error: <b>Could not save.</b>,
-      },{
-        style: {
-          border: '1px solid #14b8a5',
-          padding: '16px',
-          color: '#14b8a5',
-        },
-        iconTheme: {
-          primary: '#14b8a5',
-          secondary: '#FFFAEE',
-        },
-      }
+      }, {
+      style: {
+        border: '1px solid #14b8a5',
+        padding: '16px',
+        color: '#14b8a5',
+      },
+      iconTheme: {
+        primary: '#14b8a5',
+        secondary: '#FFFAEE',
+      },
+    }
     )
   };
 
@@ -338,12 +340,12 @@ function Create({ cities, categories }) {
 }
 
 export async function getServerSideProps() {
-  const cities = await fetch("http://localhost:8080/cities/getall").then(
-    (res) => res.json()
-  );
+  const cities = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/cities/getall`
+  ).then((res) => res.json());
 
   const categories = await fetch(
-    "http://localhost:8080/categories/getall"
+    `${process.env.NEXT_PUBLIC_API_URL}/categories/getall`
   ).then((res) => res.json());
 
   return {

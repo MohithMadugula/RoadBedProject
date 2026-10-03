@@ -7,8 +7,13 @@ import { useSelector } from "react-redux";
 function Success() {
   const reservation = useSelector(houseFromRedux);
 
-  const startDate = format(reservation?.startDate, "dd MMMM yyyy");
-  const endDate = format(reservation?.endDate, "dd MMMM yyyy");
+  const startDateValue = reservation?.startDate ? new Date(reservation.startDate) : null;
+  const endDateValue = reservation?.endDate ? new Date(reservation.endDate) : null;
+  const hasValidDates = startDateValue && !Number.isNaN(startDateValue.getTime()) && endDateValue && !Number.isNaN(endDateValue.getTime());
+  const startDate = hasValidDates ? format(startDateValue, "dd MMMM yyyy") : "-";
+  const endDate = hasValidDates ? format(endDateValue, "dd MMMM yyyy") : "-";
+
+  if (!reservation?.houseId || !hasValidDates) return null;
 
   return (
     <div>

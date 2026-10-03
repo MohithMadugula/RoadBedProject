@@ -10,10 +10,10 @@ function HouseBox({ house, imageUrl }) {
             transition duration-200 ease-in-out"
         >
           <div className="relative w-52 h-52 group-hover:shadow-lg">
-              <Image className="rounded-lg" src={imageUrl} fill alt="" />
+              <Image className="rounded-lg" src={imageUrl} fill alt="" sizes="208px" />
           </div>
 
-          <h3 className="font-semibold py-1 text-center">{house.city.cityName}</h3>
+          <h3 className="font-semibold py-1 text-center">{house.city?.cityName || "Location unavailable"}</h3>
         </div>
     
     </Link>

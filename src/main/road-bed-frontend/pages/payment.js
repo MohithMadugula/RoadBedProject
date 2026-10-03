@@ -21,17 +21,25 @@ function Payment() {
   const [selectedDates, setSelectedDates] = useState([]);
   const [isPay, setIsPay] = useState(false)
 
-  const startDate = format(houseDetail.startDate, "dd/MM/yy");
-  const endDate = format(houseDetail.endDate, "dd/MM/yy");
+  const startDateValue = houseDetail?.startDate ? new Date(houseDetail.startDate) : null;
+  const endDateValue = houseDetail?.endDate ? new Date(houseDetail.endDate) : null;
+  const hasValidDates = startDateValue && !Number.isNaN(startDateValue.getTime()) && endDateValue && !Number.isNaN(endDateValue.getTime());
+  const startDate = hasValidDates ? format(startDateValue, "dd/MM/yy") : "-";
+  const endDate = hasValidDates ? format(endDateValue, "dd/MM/yy") : "-";
 
   useEffect(() => {
+    if (!houseDetail?.houseId || !hasValidDates) {
+      router.replace("/");
+      return;
+    }
     calculateSelectedDates();
-  }, []);
+  }, [houseDetail?.houseId, hasValidDates]);
 
   const calculateSelectedDates = () => {
     const datesArray = [];
-    let startDate = moment(houseDetail.startDate);
-    let endDate = moment(houseDetail.endDate);
+    if (!hasValidDates) return;
+    let startDate = moment(startDateValue);
+    let endDate = moment(endDateValue);
 
     while (startDate.isSameOrBefore(endDate)) {
       datesArray.push(startDate.clone().format("yyyy-MM-DD"));
@@ -64,6 +72,8 @@ function Payment() {
       });
     }, 3000)
   };
+  if (!houseDetail?.houseId || !hasValidDates) return null;
+
   return (
     <div className="">
       <Header />
@@ -81,7 +91,7 @@ function Payment() {
           <div className="border-b border-gray-300 mr-6 ml-5" />
           <div className="grid grid-cols-2 px-5 py-1 pt-2 text-gray-600">
             <p>City</p>
-            <p>{houseDetail.city.cityName}</p>
+            <p>{houseDetail.city?.cityName || "Location unavailable"}</p>
           </div>
           <div className="grid grid-cols-2 px-5 py-1 text-gray-600">
             <p>Days</p>
@@ -179,7 +189,7 @@ function Payment() {
                   <div className={`${!isPay ? "hidden": "inline-block"} pl-3`} role="status">
                     <svg
                       aria-hidden="true"
-                      class="inline w-6 h-6 mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-[#ed6172]"
+                      className="inline w-6 h-6 mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-[#ed6172]"
                       viewBox="0 0 100 101"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
@@ -193,7 +203,7 @@ function Payment() {
                         fill="currentFill"
                       />
                     </svg>
-                    <span class="sr-only">Loading...</span>
+                    <span className="sr-only">Loading...</span>
                   </div>
                 </div>
               </button>

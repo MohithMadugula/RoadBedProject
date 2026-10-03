@@ -7,13 +7,13 @@ export const authOptions = {
       name: "Credentials",
 
       credentials: {
-        username: { label: "Username", type: "text", placeholder: "jsmith" },
+        email: { label: "Email", type: "email", placeholder: "example@example.com" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {
         const { email, password } = credentials;
         
-        const result = await fetch("http://localhost:8080/auth/login", {
+        const result = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

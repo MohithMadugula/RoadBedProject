@@ -12,7 +12,7 @@ function CategoryCard({ name, imageUrl }) {
       onClick={() => router.push(`/houseCards/${name}`)}
     >
       <div className="relative w-24 h-24 sm:w-36 sm:h-36 group-hover:shadow-lg">
-        <Image className="rounded-lg" src={imageUrl} fill alt="" />
+        <Image className="rounded-lg" src={imageUrl} fill alt="" sizes="(max-width: 640px) 96px, 144px" />
       </div>
 
       <h3 className="font-semibold text-md sm:text-lg py-1 text-center">{name}</h3>

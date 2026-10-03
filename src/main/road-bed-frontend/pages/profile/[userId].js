@@ -52,22 +52,22 @@ function Profile({ user, tenant }) {
       <div className="max-w-7xl mx-auto mt-8">
         <div className="flex">
           {/* Profile Pic */}
-       
+
           <div className="relative w-32 px-12 hidden sm:inline-block">
             <Image
               className="rounded-full object-cover cursor-pointer"
               src={
                 profilePic ||
-                "https://res.cloudinary.com/dspea8wm4/image/upload/v1676743195/default_profile_pic_aqsicv.jpg"
+                "/default_profile_pic.svg"
               }
               fill
+              sizes="128px"
               alt=""
               onClick={() => pictureRef.current.click()}
             />
             <CheckCircleIcon
-              className={`${
-                isPictureChange && !isLoading ? "inline" : "hidden"
-              } absolute bottom-0 right-0 cursor-pointer
+              className={`${isPictureChange && !isLoading ? "inline" : "hidden"
+                } absolute bottom-0 right-0 cursor-pointer
               hover:scale-105 transform transition-all duration-200 ease-in-out w-10 h-10`}
               color={"#ED6172"}
               onClick={updateProfilePicture}
@@ -125,10 +125,10 @@ function Profile({ user, tenant }) {
                     >
                       <HomeIcon className="w-6 h-6 mr-1" />
                       My Houses
-                      <div class="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-[#ed6172] border-2 border-white rounded-full -top-2 -right-2 dark:border-gray-900">
-                        {tenant.ownHouses.length > 9
+                      <div className="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-[#ed6172] border-2 border-white rounded-full -top-2 -right-2 dark:border-gray-900">
+                        {(tenant.ownHouses || []).length > 9
                           ? "9+"
-                          : tenant.ownHouses.length}
+                          : (tenant.ownHouses || []).length}
                       </div>
                     </div>
                   </div>
@@ -147,10 +147,10 @@ function Profile({ user, tenant }) {
                     >
                       <HeartIcon className="w-6 h-6 mr-1" />
                       Favorite Houses
-                      <div class="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-[#ed6172] border-2 border-white rounded-full -top-2 -right-2 dark:border-gray-900">
-                        {user.favoriteHouses.length > 9
+                      <div className="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-[#ed6172] border-2 border-white rounded-full -top-2 -right-2 dark:border-gray-900">
+                        {(user.favoriteHouses || []).length > 9
                           ? "9+"
-                          : user.favoriteHouses.length}
+                          : (user.favoriteHouses || []).length}
                       </div>
                     </div>
                   </div>
@@ -169,10 +169,10 @@ function Profile({ user, tenant }) {
                     >
                       <ClipboardCheckIcon className="w-6 h-6 mr-1" />
                       Visited Houses
-                      <div class="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-[#ed6172] border-2 border-white rounded-full -top-2 -right-2 dark:border-gray-900">
-                        {tenant.visitedHouses.length > 9
+                      <div className="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-[#ed6172] border-2 border-white rounded-full -top-2 -right-2 dark:border-gray-900">
+                        {(tenant.visitedHouses || []).length > 9
                           ? "9+"
-                          : tenant.visitedHouses.length}
+                          : (tenant.visitedHouses || []).length}
                       </div>
                     </div>
                   </div>
@@ -191,13 +191,13 @@ function Profile({ user, tenant }) {
         {/* My Houses Or Favorite Houses Components */}
         <div className="mt-16 px-6">
           {activeTab === "myHouse" ? (
-            <MyHouseComponent houses={tenant.ownHouses} />
+            <MyHouseComponent houses={tenant.ownHouses || []} />
           ) : null}
           {activeTab === "favorites" ? (
-            <MyFavoritesComponent houses={user.favoriteHouses} />
+            <MyFavoritesComponent houses={user.favoriteHouses || []} />
           ) : null}
           {activeTab === "visited" ? (
-            <MyVisitedHouseComponent visits={tenant.visitedHouses} />
+            <MyVisitedHouseComponent visits={tenant.visitedHouses || []} />
           ) : null}
         </div>
       </div>
@@ -205,23 +205,71 @@ function Profile({ user, tenant }) {
   );
 }
 
+async function fetchJsonSafely(url) {
+  const response = await fetch(url);
+  const body = await response.text();
+
+  if (!response.ok) {
+    throw new Error(`Request failed (${response.status}) for ${url}`);
+  }
+
+  if (!body.trim()) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(body);
+  } catch (error) {
+    throw new Error(`Invalid JSON returned by ${url}: ${body.slice(0, 200)}`);
+  }
+}
+
 export async function getServerSideProps(context) {
   const { userId } = context.params;
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-  const user = await fetch(
-    "http://localhost:8080/users/getById/" + userId
-  ).then((res) => res.json());
+  try {
+    const user = await fetchJsonSafely(
+      `${apiUrl}/users/getById/${userId}`
+    );
 
-  const tenant = await fetch(
-    "http://localhost:8080/tenants/getByEmail/" + user.email
-  ).then((res) => res.json());
+    // If the user does not exist, let Next.js render its 404 page instead
+    // of trying to read properties from an empty API response.
+    if (!user) {
+      return { notFound: true };
+    }
 
-  return {
-    props: {
-      user,
-      tenant,
-    },
-  };
+    let tenant = null;
+
+    try {
+      tenant = await fetchJsonSafely(
+        `${apiUrl}/tenants/getByEmail/${encodeURIComponent(user.email)}`
+      );
+    } catch (error) {
+      console.error("Unable to load tenant profile:", error.message);
+    }
+
+    // Keep the profile page usable even when the tenant endpoint returns
+    // an empty/error response.
+    tenant = {
+      profilePicture: tenant?.profilePicture ?? null,
+      ownHouses: Array.isArray(tenant?.ownHouses) ? tenant.ownHouses : [],
+      visitedHouses: Array.isArray(tenant?.visitedHouses)
+        ? tenant.visitedHouses
+        : [],
+      ...tenant,
+    };
+
+    return {
+      props: {
+        user,
+        tenant,
+      },
+    };
+  } catch (error) {
+    console.error("Unable to load profile:", error.message);
+    return { notFound: true };
+  }
 }
 
 export default Profile;

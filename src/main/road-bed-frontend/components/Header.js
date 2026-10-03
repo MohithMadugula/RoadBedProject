@@ -51,12 +51,9 @@ function Header({ searchQuery }) {
       <div className="max-w-7xl mx-auto grid grid-cols-3 justify-between items-center">
         <Link href="/">
           <div className="flex items-center space-x-2 cursor-pointer">
-            <Image
-              src="https://res.cloudinary.com/dspea8wm4/image/upload/v1676559288/road_icon_kh1xt5.png"
-              className="object-cover h-10 w-10"
-              width={1200}
-              height={900}
-            />
+            <div className="h-10 w-10 rounded-full bg-teal-400 flex items-center justify-center text-white font-bold">
+              RB
+            </div>
             <h3 className="text-lg font-bold text-teal-500 hidden md:inline-block">
               Road Bed
             </h3>

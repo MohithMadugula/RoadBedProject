@@ -17,7 +17,7 @@ function VisitedHouseCard({ visit }) {
       <div className="w-64 h-52 px-3 hidden sm:flex justify-center items-center">
         <Image
           className="w-64 h-40 object-cover rounded-lg"
-          src={visit.house.imageUrlList[0].imageUrl}
+          src={visit.house.imageUrlList?.[0]?.imageUrl || "/house_placeholder.png"}
           width={1200}
           height={900}
         />
@@ -28,7 +28,7 @@ function VisitedHouseCard({ visit }) {
           {visit.house.description}
         </h3>
         <p className="text-gray-500 text-sm">
-          {visit.house.category.categoryName} · {visit.house.capacity} guests
+          {visit.house.category?.categoryName || "House"} · {visit.house.capacity} guests
         </p>
         <p className="text-gray-600 text-md">{visit.house.address}</p>
       </div>

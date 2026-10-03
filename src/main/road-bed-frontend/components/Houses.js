@@ -11,11 +11,11 @@ export default function Houses({ houses }) {
         className="flex overflow-scroll scrollbar-thin  
       scrollbar-thumb-teal-600 space-x-3 overflow-y-hidden"
       >
-        {houses.map((house) => (
+        {(houses || []).map((house) => (
           <HouseBox
             key={house.houseId}
             house={house}
-            imageUrl={house.imageUrlList[0].imageUrl}
+            imageUrl={house.imageUrlList?.[0]?.imageUrl || "/house_placeholder.png"}
           />
         ))}
       </div>

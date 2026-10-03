@@ -31,11 +31,14 @@ function Search({city, formattedStartDate, formattedEndDate, houses}) {
 
 export async function getServerSideProps(context) {
 
-  const {city, startDate, endDate} = context.query
+  const {city, startDate, endDate} = context.query;
+  if (!city || !startDate || !endDate || Number.isNaN(new Date(startDate).getTime()) || Number.isNaN(new Date(endDate).getTime())) {
+    return { notFound: true };
+  }
   const formattedStartDate = format(new Date(startDate), "dd MMMM yyyy");
   const formattedEndDate = format(new Date(endDate), "dd MMMM yyyy");
 
-  const houses = await fetch(`http://localhost:8080/houses/getByCityNameAndEmptyDate/${city}?start=${format(new Date(startDate), "yyyy-MM-dd")}&end=${format(new Date(endDate), "yyyy-MM-dd")}`)
+  const houses = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/houses/getByCityNameAndEmptyDate/${city}?start=${format(new Date(startDate), "yyyy-MM-dd")}&end=${format(new Date(endDate), "yyyy-MM-dd")}`)
     .then((res) => res.json());
 
   return {

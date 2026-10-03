@@ -73,12 +73,12 @@ export default function Home({ houses, categories }) {
 }
 
 export async function getServerSideProps() {
-  const houses = await fetch("http://localhost:8080/houses/getall").then(
+  const houses = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/houses/getall`).then(
     (res) => res.json()
   );
 
   const categories = await fetch(
-    "http://localhost:8080/categories/getall"
+  `${process.env.NEXT_PUBLIC_API_URL}/categories/getall`
   ).then((res) => res.json());
 
   return {
